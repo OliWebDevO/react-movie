@@ -5,12 +5,12 @@ const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = import.meta.env.VITE_APPRWITE_COLLECTION_ID;
 
 const client = new Client()
-    .setEndpoint('http://cloud.appwrite.io/v1') // Your API Endpoint
+    .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
     .setProject(PROJECT_ID) // Your project ID
 
 const database = new  Databases(client);
 
-export const updateSearchCount = async ({searchTerm, movie}) => {
+export const updateSearchCount = async (searchTerm, movie) => {
     // Use Appwrite SDK to check if the search term is already in the database
     try {
         const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
