@@ -25,6 +25,8 @@
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
     background: #030014;
+    overflow: hidden;
+    overflow-y: scroll;
   }
 
   h1 {

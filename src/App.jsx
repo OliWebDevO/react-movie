@@ -118,11 +118,7 @@ const App = () => {
               <ul>
                 {moviesList.map((movie) => (
                   <MovieCard key={movie.id} movie={movie} />
-                  // <li key={movie.id}>
-                  //   <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} alt={movie.title} />
-                  //   <h3>{movie.title}</h3>
-                  //   <p>{movie.overview}</p>
-                  // </li>
+            
                 ))}
               </ul>
             )}
