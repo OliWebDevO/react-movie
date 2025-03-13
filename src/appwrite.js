@@ -8,7 +8,7 @@ const client = new Client()
     .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
     .setProject(PROJECT_ID) // Your project ID
 
-const database = new  Databases(client);
+const database = new Databases(client);
 
 export const updateSearchCount = async (searchTerm, movie) => {
     // Use Appwrite SDK to check if the search term is already in the database
@@ -36,3 +36,16 @@ export const updateSearchCount = async (searchTerm, movie) => {
         console.error(`Error updating search count: ${error}`)
     }
 } 
+
+// Fetching function for the trending movies
+export const getTrendingMovies = async () => {
+    try {
+        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+            Query.orderDesc('count'),
+            Query.limit(5),
+        ])
+        return result.documents;
+    } catch (error) {
+        console.error(`Error getting trending movies: ${error}`)
+    }
+}

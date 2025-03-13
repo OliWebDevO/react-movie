@@ -5,7 +5,7 @@ import Search from './components/Search'
 import Spinner from './components/Spinner'
 import MovieCard from './components/movieCard'
 import {useDebounce} from 'react-use'
-import { updateSearchCount } from './appwrite'
+import { getTrendingMovies, updateSearchCount } from './appwrite'
 
 const API_BASE_URL='https://api.themoviedb.org/3'
 const API_KEY= import.meta.env.VITE_TMDB_API_KEY
@@ -20,11 +20,14 @@ const API_OPTIONS = {
 
 const App = () => {
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [moviesList, setMoviesList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [moviesList, setMoviesList] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useDebounce(() => {
     setDebouncedSearchTerm(searchTerm);
@@ -63,22 +66,50 @@ const App = () => {
     }
   }
 
+  const loadTrendingMovies = async () => {
+    try {
+      const movies = await getTrendingMovies();
+      setTrendingMovies(movies);
+    }
+    catch (error) {
+      console.error(`Error loading trending movies: ${error}`)
+    }
+  }
+
   useEffect(() => {
     fetchMovies(debouncedSearchTerm);
   }
   ,[debouncedSearchTerm]);
+
+  useEffect(() => {
+    loadTrendingMovies();
+  }
+  ,[]);
 
   return (
     <main>
       <div className='pattern'/>
         <div className='wrapper'>
           <header>
-            <img src="../public/hero.png" alt="" />
+            <img src="/hero.png" alt="" />
             <h1> Find <span className='text-gradient'>Movies</span> You'll Enjoy Without the Hassle </h1>
             <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </header>
+          {trendingMovies.length > 0 && (
+            <section className='trending'>
+              <h2>Trending Movies</h2>
+              <ul>
+                {trendingMovies.map((movie, index) => (
+                  <li key={movie.$id}>
+                    <p>{index+1}</p>
+                    <img src={movie.poster_url} alt="" />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <section className='all-movies'>
-            <h2 className='mt-[40px]'>All Movies</h2>
+            <h2 className=''>All Movies</h2>
             {isLoading ? (
               <Spinner/>
             ) : errorMessage ? (
@@ -100,7 +131,6 @@ const App = () => {
     </main>
   )
 }
-
 export default App
 
 
